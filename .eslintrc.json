@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "equimper",
+    "prettier/react",
+    "prettier",
+    "airbnb"
+  ],
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/forbid-prop-types": "off",
+    "no-plusplus": "off",
+    "class-methods-use-this": "off",
+    "linebreak-style": "off",
+    "global-require": "off",
+    "unexpected_char_a": "off",
+    "react/no-unescaped-entities": "off",
+    "function-paren-newline": "off"
+  }
+}

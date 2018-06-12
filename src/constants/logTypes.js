@@ -1,0 +1,3 @@
+export const LOGTYPE_BLOODGLUCOSE = 0;
+export const LOGTYPE_CARBONHYDRATE = 1;
+export const LOGTYPE_CUSTOMLOG = 2;
