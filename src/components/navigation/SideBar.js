@@ -251,6 +251,7 @@ class SideBar extends React.Component {
     this.props.userLogActions.resetUserLogFromApi(fromDate);
     this.props.externalUserDataActions.resetExternalDataFromApi();
     this.props.settingsActions.loadEffectiveUserSettings();
+    //this.props.settingsActions.setInsulinUnitsPerDay(45.2, null);
   }
 
   handleAppStateChange = (nextAppState) => {

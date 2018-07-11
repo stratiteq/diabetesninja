@@ -1,9 +1,12 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { Alert, AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Container, Content, Input, Item, Text, View } from 'native-base';
 import CalculateInsulinStyle from '../styles/CalculateInsulinStyles';
-import * as storageKeys from '../constants/storageKeys';
+import * as settingsActions from '../redux/settings/actions';
+
 
 class CalculateInsulinScreen extends React.Component {
   constructor(props) {
@@ -19,43 +22,51 @@ class CalculateInsulinScreen extends React.Component {
     });
 
     this.state = {
-      totalUnits: '0',
+      totalUnits: this.props.settings.insulinUnitsPerDay,
     };
 
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  async componentWillMount() {
-    const storedTotalUnits = await AsyncStorage.getItem(storageKeys.TOTALUNITS_INSULIN);
-    if (storedTotalUnits === null) return;
-    this.setState({
-      totalUnits: storedTotalUnits,
-    });
-  }
-
-  async onNavigatorEvent(event) {
+  onNavigatorEvent(event) {
     switch (event.id) {
       case 'backPress':
         this.props.navigator.pop();
         break;
       case 'save':
-        await this.saveTotalUnits();
+        this.saveTotalUnitsToDatabase();
         break;
       default:
         break;
     }
   }
 
-  async saveTotalUnits() {
-    await AsyncStorage.setItem(
-      storageKeys.TOTALUNITS_INSULIN,
-      this.state.totalUnits,
-    );
-    Alert.alert(
-      'Sparat',
-      'Totalt antal enhteter av insulin är nu sparat på denna devicen.',
-      [{ text: 'OK' }],
-    );
+  saveTotalUnitsToDatabase() {
+    if (!Number.isNaN(this.state.totalUnits)) {
+      const parsedNo = Number.parseFloat(this.state.totalUnits);
+      this.props.settingsActions.setInsulinUnitsPerDay(parsedNo, (message) => {
+        if (message.length === 0) {
+          Alert.alert(
+            'Sparat',
+            'Totalt antal enheter av insulin är nu sparat på detta användarkonto.',
+            [{ text: 'OK' }],
+          );
+        } else {
+          Alert.alert(
+            'Fel vid sparning av Inställningar',
+            'Försök igen senare.',
+            [{ text: 'OK' }],
+          );
+        }
+      },
+      );
+    } else {
+      Alert.alert(
+        'Kan inte spara',
+        'Antal enheter måste vara numeriskt.',
+        [{ text: 'OK' }],
+      );
+    }
   }
 
   calculateGram(rule) {
@@ -102,6 +113,7 @@ class CalculateInsulinScreen extends React.Component {
                     keyboardType="numeric"
                     maxLength={4}
                     textAlign="center"
+                    selectTextOnFocus
                   />
                 </Item>
               </View>
@@ -175,10 +187,26 @@ class CalculateInsulinScreen extends React.Component {
 }
 
 CalculateInsulinScreen.defaultProps = {
+  settings: null,
+  settingsActions: null,
 };
 
 CalculateInsulinScreen.propTypes = {
   navigator: PropTypes.object.isRequired,
+  settings: PropTypes.object,
+  settingsActions: PropTypes.object,
 };
 
-export default CalculateInsulinScreen;
+function mapStateToProps(state) {
+  return {
+    settings: state.settings,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    settingsActions: bindActionCreators(settingsActions, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalculateInsulinScreen);

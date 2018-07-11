@@ -44,26 +44,28 @@ export function setNewBSLimits(limits, onSuccess) {
 }
 
 
-export function setInsulinUnutsPerDay(insulinUnitsPerDay, onSuccess) {
-  return async (dispatch) => {
-    const bearerToken = await ninjaTokenParser.getBearerTokenFromStorageAsync();
-    const userIdFromStorage = await AsyncStorage.getItem(storageKeys.LOGGED_IN_USER);
+export function setInsulinUnitsPerDay(insulinUnitsPerDay, onSuccess) {
 
-    Api.put(`UserSettings/UpdateTotalInsulinUnitsPerDay/${userIdFromStorage}`, {
+  return async (dispatch, getState) => {
+
+    const bearerToken = await ninjaTokenParser.getBearerTokenFromStorageAsync();
+    const userIdSelf = getState().app.loggedInUser.UserId;
+
+    Api.put(`UserSettings/UpdateTotalInsulinUnitsPerDay/${userIdSelf}`, {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
-      body: {
-        insulinUnitsPerDay,
-      },
+      body: insulinUnitsPerDay,
     })
       .then(() => {
         dispatch({ type: types.SET_INSULIN_UNITS_PER_DAY, payload: insulinUnitsPerDay });
-
+        console.log('OK');
         if (onSuccess !== null) onSuccess('');
       })
       .catch((error) => {
-        onSuccess('Oväntat fel inträffade när insulindoser skulle sparas');
+        console.log(error);
+        dispatch({ type: types.SET_INSULIN_UNITS_PER_DAY, payload: 33 });
+        if (onSuccess !== null) onSuccess('Oväntat fel inträffade när insulindoser skulle sparas');
       });
   };
 }
@@ -73,11 +75,15 @@ function tempMergeUnitsFromLocalStorageRemoveInLaterVersions() {
   console.log('tempMerge');
   return async (dispatch) => {
     const insulinUnitsFromStorage = await AsyncStorage.getItem(storageKeys.TOTALUNITS_INSULIN);
+    console.log('from storage ' + insulinUnitsFromStorage);
     if (insulinUnitsFromStorage != null) {
       const floatValue = parseFloat(insulinUnitsFromStorage);
+      console.log('from float ' + floatValue.toString());
       if (floatValue > 0) {
-        setInsulinUnutsPerDay(floatValue, null);
+        console.log('Call with ' + floatValue);
+        setInsulinUnitsPerDay(floatValue, null);
       }
+      console.log('tempMerge done');
       AsyncStorage.removeItem(storageKeys.TOTALUNITS_INSULIN);
       dispatch({
         type: types.SET_INSULIN_UNITS_PER_DAY,
@@ -87,12 +93,36 @@ function tempMergeUnitsFromLocalStorageRemoveInLaterVersions() {
   };
 }
 
+export function tempMergeUnitsFromLocalStorageRemoveInLaterVersions2(insulinUnitsPerDay) {
+  console.log('tempMerge2' + insulinUnitsPerDay);
+ 
+  
+  if (insulinUnitsPerDay != null) {
+    const floatValue = parseFloat(insulinUnitsPerDay);
+    console.log('from float ' + floatValue.toString());
+    if (floatValue > 0) {
+      console.log('Call with ' + floatValue);
+      setInsulinUnitsPerDay(floatValue, null);
+    }
+    console.log('tempMerge done');
+   
+  } else {
+    console.log("NOPEPE");
+  }
+
+ 
+}
+
+function RemoveLocalStorageInsulinMigration() {
+  AsyncStorage.removeItem(storageKeys.TOTALUNITS_INSULIN);
+}
 
 export function loadEffectiveUserSettings() {
   return async (dispatch, getState) => {
     const bearerToken = await ninjaTokenParser.getBearerTokenFromStorageAsync();
     const userIdFollowing = await AsyncStorage.getItem(storageKeys.SELECTED_USER_ID);
     const userIdSelf = getState().app.loggedInUser.UserId;
+    const insulinUnitsFromStorageMain = await AsyncStorage.getItem(storageKeys.TOTALUNITS_INSULIN);  // Remove after migration grace period (i.e early 2019)
 
     dispatch({
       type: types.LOADING_SETTINGS_START,
@@ -117,7 +147,18 @@ export function loadEffectiveUserSettings() {
           },
         });
 
-        tempMergeUnitsFromLocalStorageRemoveInLaterVersions();
+        // Remove after migration grace period (i.e early 2019)
+        if (insulinUnitsFromStorageMain !== null) {  
+          const floatValue = parseFloat(insulinUnitsFromStorageMain);
+          if (floatValue > 0) {
+            dispatch(setInsulinUnitsPerDay(floatValue, null));
+          }
+          RemoveLocalStorageInsulinMigration();
+        }
+        // End migration script
+
+        
+        //tempMergeUnitsFromLocalStorageRemoveInLaterVersions2(insulinUnitsFromStorageMain);
       })
       .catch((error) => {
         // TODO: What to do?
