@@ -211,7 +211,7 @@ class ChartBox extends React.Component {
             }}
             style={{
               data: {
-                stroke: '#C0C0C0',
+                stroke: '#7F0000',
                 strokeWidth: 0.5,
                 strokeLinecap: 'round',
                 strokeDasharray: '5,5',
@@ -230,7 +230,7 @@ class ChartBox extends React.Component {
             }}
             style={{
               data: {
-                stroke: '#C0C0C0',
+                stroke: '#0094FF',
                 strokeWidth: 0.5,
                 strokeDasharray: '5,5',
                 strokeLinecap: 'round',

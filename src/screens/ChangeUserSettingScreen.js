@@ -1,30 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Keyboard, TouchableWithoutFeedback, TextInput, View, StyleSheet, Text } from 'react-native';
-import { Container, Content, Item, List, ListItem } from 'native-base';
+import { Alert, Keyboard, TouchableWithoutFeedback, View, StyleSheet, Text } from 'react-native';
+import { Container, Content, Item, List, ListItem, Input } from 'native-base';
 import { bindActionCreators } from 'redux';
 import * as settingsActions from '../redux/settings/actions';
 import * as navigatorStyles from '../styles/NavigatorStyles';
 import * as commonCss from '../styles/CommonStyles';
-import ButtonContainer from '../components/log/ButtonContainer';
 
 const styles = StyleSheet.create({
-  container: {
+  itemViewOuter: {
     flex: 1,
-    backgroundColor: "#FFF",
-    flexDirection: "column"
+    flexDirection: 'column',
   },
-  input: {
-    height: 60,
-    fontSize: 30,
-    fontWeight: "600",
-    textAlign: "center"
-  },
-  unitLabel: {
-    fontSize: 16,
-    textAlign: "center"
-  }
 });
 
 class ChangeUserSettingScreen extends React.Component {
@@ -33,14 +21,18 @@ class ChangeUserSettingScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.props.navigator.setButtons({
-    //   rightButtons: [
-    //     {
-    //       id: 'save',
-    //       title: 'Spara',
-    //     },
-    //   ],
-    // });
+    const isFollowerCheck = this.checkisFollower();
+
+    if (!isFollowerCheck) {
+      this.props.navigator.setButtons({
+        rightButtons: [
+          {
+            id: 'save',
+            title: 'Spara',
+          },
+        ],
+      });
+    }
 
     this.state = {
       MinBSValue: this.props.settings.lowerBSLimit.toString(),
@@ -57,9 +49,9 @@ class ChangeUserSettingScreen extends React.Component {
       case 'backPress':
         this.props.navigator.pop();
         break;
-      // case 'save':
-      //   this.onSavePassword();
-      //   break;
+      case 'save':
+        this.onSaveSettings();
+        break;
       default:
         break;
     }
@@ -91,11 +83,9 @@ class ChangeUserSettingScreen extends React.Component {
 
     if (this.validateTextField(bloodSugarMin, 'Undre Blodsockervärde') && this.validateTextField(bloodSugarMax, 'Övre Blodsockervärde')) {
       if (bloodSugarMin > bloodSugarMax) {
-        this.displayMessage('Blodsocker gränsvärden','Den lägre gränsen får inte vbara högre än den övre', null);
+        this.displayMessage('Blodsocker gränsvärden', 'Den lägre gränsen får inte vbara högre än den övre', null);
         return;
       }
-
-      
       this.props.settingsActions.setNewBSLimits(
         {
           lowerBSLimit: bloodSugarMin,
@@ -104,9 +94,7 @@ class ChangeUserSettingScreen extends React.Component {
         (message) => {
           if (message.length === 0) {
             this.displayMessage('Inställningar sparade', 'Tänk på att det kan ta ett tag innan ändringarna kommer över till ev. följare', null);
-          }
-          else
-          {
+          } else {
             this.displayMessage('Fel vid sparning av Inställningar', message, null);
           }
         },
@@ -184,46 +172,43 @@ class ChangeUserSettingScreen extends React.Component {
           </ListItem>
           <ListItem last style={[commonCss.CommonStyles.listItem, { flexDirection: 'column' }]}>
             <Item>
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View style={{ width: '50%' }}>
+              <View style={styles.itemViewOuter}>
+                <View>
                   <Text>Lägre gräns (mmol/l)</Text>
-                  <TextInput
-                    style={[commonCss.default.input, styles.input]}
+                  <Input
+                    clearButtonMode="while-editing"
+                    autoCapitalize="none"
                     keyboardType="numeric"
                     selectTextOnFocus
                     editable={!isFollower}
-                    multiline={false}
+                    maxLength={3}
                     onChangeText={text => this.onChangedText(text, 'MinBSValue')}
                     value={this.state.MinBSValue}
-                    maxLength={3}
-                    underlineColorAndroid="#00000000"
                   />
-                  
                 </View>
-                <View style={{ width: '50%' }}>
+              </View>
+            </Item>
+          </ListItem>
+          <ListItem last style={[commonCss.CommonStyles.listItem, { flexDirection: 'column' }]}>
+            <Item>
+              <View style={styles.itemViewOuter}>
+                <View>
                   <Text>Övre gräns (mmol/l)</Text>
-                  <TextInput
-                    style={[commonCss.default.input, styles.input]}
+                  <Input
+                    clearButtonMode="while-editing"
+                    autoCapitalize="none"
                     keyboardType="numeric"
                     selectTextOnFocus
                     editable={!isFollower}
-                    multiline={false}
+                    maxLength={3}
                     onChangeText={text => this.onChangedText(text, 'MaxBSValue')}
                     value={this.state.MaxBSValue}
-                    maxLength={3}
-                    underlineColorAndroid="#00000000"
                   />
                 </View>
               </View>
             </Item>
           </ListItem>
         </List>
-        
-        { isFollower ? null : (<ButtonContainer
-          tapped={this.onSaveSettings}
-          onCancel={this.onCancelLog}
-          text="Spara"
-        />)}
       </View>);
   }
 
