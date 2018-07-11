@@ -20,8 +20,6 @@ export function setNewBSLimits(limits, onSuccess) {
     const bearerToken = await ninjaTokenParser.getBearerTokenFromStorageAsync();
     const userIdFromStorage = await AsyncStorage.getItem(storageKeys.SELECTED_USER_ID);
 
-    console.log(`${userIdFromStorage} ${limits.lowerBSLimit} ${limits.upperBSLimit}`);
-
     Api.put(`UserSettings/UpdateMinAndMaxBloodSugarLimits/${userIdFromStorage}`, {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -59,58 +57,13 @@ export function setInsulinUnitsPerDay(insulinUnitsPerDay, onSuccess) {
     })
       .then(() => {
         dispatch({ type: types.SET_INSULIN_UNITS_PER_DAY, payload: insulinUnitsPerDay });
-        console.log('OK');
         if (onSuccess !== null) onSuccess('');
       })
       .catch((error) => {
-        console.log(error);
         dispatch({ type: types.SET_INSULIN_UNITS_PER_DAY, payload: 33 });
         if (onSuccess !== null) onSuccess('Oväntat fel inträffade när insulindoser skulle sparas');
       });
   };
-}
-
-// Temporary merge from local storage to datbase. Remove call to this in 2019
-function tempMergeUnitsFromLocalStorageRemoveInLaterVersions() {
-  console.log('tempMerge');
-  return async (dispatch) => {
-    const insulinUnitsFromStorage = await AsyncStorage.getItem(storageKeys.TOTALUNITS_INSULIN);
-    console.log('from storage ' + insulinUnitsFromStorage);
-    if (insulinUnitsFromStorage != null) {
-      const floatValue = parseFloat(insulinUnitsFromStorage);
-      console.log('from float ' + floatValue.toString());
-      if (floatValue > 0) {
-        console.log('Call with ' + floatValue);
-        setInsulinUnitsPerDay(floatValue, null);
-      }
-      console.log('tempMerge done');
-      AsyncStorage.removeItem(storageKeys.TOTALUNITS_INSULIN);
-      dispatch({
-        type: types.SET_INSULIN_UNITS_PER_DAY,
-        payload: floatValue,
-      });
-    }
-  };
-}
-
-export function tempMergeUnitsFromLocalStorageRemoveInLaterVersions2(insulinUnitsPerDay) {
-  console.log('tempMerge2' + insulinUnitsPerDay);
- 
-  
-  if (insulinUnitsPerDay != null) {
-    const floatValue = parseFloat(insulinUnitsPerDay);
-    console.log('from float ' + floatValue.toString());
-    if (floatValue > 0) {
-      console.log('Call with ' + floatValue);
-      setInsulinUnitsPerDay(floatValue, null);
-    }
-    console.log('tempMerge done');
-   
-  } else {
-    console.log("NOPEPE");
-  }
-
- 
 }
 
 function RemoveLocalStorageInsulinMigration() {
@@ -156,9 +109,6 @@ export function loadEffectiveUserSettings() {
           RemoveLocalStorageInsulinMigration();
         }
         // End migration script
-
-        
-        //tempMergeUnitsFromLocalStorageRemoveInLaterVersions2(insulinUnitsFromStorageMain);
       })
       .catch((error) => {
         // TODO: What to do?
