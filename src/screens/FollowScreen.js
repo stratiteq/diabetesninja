@@ -20,6 +20,7 @@ import * as inviteActions from "../redux/invite/actions";
 import * as externalUserDataActions from "../redux/externalUserData/actions";
 import * as navigatorStyles from "../styles/NavigatorStyles";
 import * as commonCss from "../styles/CommonStyles";
+import * as settingsActions from '../redux/settings/actions';
 
 // eslint-disable-next-line import/no-unresolved
 const menuIcon = require("../../img/ic_menu_white.png");
@@ -162,6 +163,7 @@ class FollowScreen extends React.Component {
     const fromDate = moment(new Date()).add(-7, "day");
     this.props.userLogActions.resetUserLogFromApi(fromDate);
     this.props.externalUserDataActions.resetExternalDataFromApi();
+    this.props.settingsActions.loadEffectiveUserSettings();
   }
 
   renderHasFollowers() {
@@ -240,6 +242,7 @@ FollowScreen.defaultProps = {
   inviteActions: null,
   loginActions: null,
   externalUserDataActions: null,
+  settingsActions: null,
   invite: null,
   account: null,
   app: null
@@ -252,6 +255,7 @@ FollowScreen.propTypes = {
   accountActions: PropTypes.object,
   loginActions: PropTypes.object,
   externalUserDataActions: PropTypes.object,
+  settingsActions: PropTypes.object,
   invite: PropTypes.object,
   account: PropTypes.object,
   app: PropTypes.object
@@ -274,7 +278,8 @@ function mapDispatchToProps(dispatch) {
     externalUserDataActions: bindActionCreators(
       externalUserDataActions,
       dispatch
-    )
+    ),
+    settingsActions: bindActionCreators(settingsActions, dispatch),
   };
 }
 

@@ -48,6 +48,7 @@ class UserAccountScreen extends React.Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.onChangePasswordPress = this.onChangePasswordPress.bind(this);
     this.onChangeUserNamePress = this.onChangeUserNamePress.bind(this);
+    this.onChangeSettings = this.onChangeSettings.bind(this);
   }
 
   onNavigatorEvent(event) {
@@ -63,6 +64,15 @@ class UserAccountScreen extends React.Component {
         break;
       default:
     }
+  }
+
+  onChangeSettings() {
+    this.props.navigator.push({
+      title: 'Inställningar',
+      screen: 'diabetesNinja.ChangeUserSettingsScreen',
+      overrideBackPress: false,
+      passProps: {},
+    });
   }
 
   onChangePasswordPress() {
@@ -94,6 +104,17 @@ class UserAccountScreen extends React.Component {
         <Container style={CommonStyle.container}>
           <Content>
             <List style={CommonStyle.list}>
+              <ListItem icon onPress={this.onChangeSettings}>
+                <Left>
+                  <Icon name="cog" />
+                </Left>
+                <Body>
+                  <Text>Inställningar</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward" />
+                </Right>
+              </ListItem>
               <ListItem icon onPress={this.onChangePasswordPress}>
                 <Left>
                   <Icon name="hand" />

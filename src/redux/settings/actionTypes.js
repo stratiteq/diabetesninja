@@ -1,2 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
+export const SET_NEW_BS_LIMITS = 'SET_NEW_BS_LIMITS';
+export const SET_INSULIN_UNITS_PER_DAY = 'SET_INSULIN_UNITS_PER_DAY';
+export const LOADING_SETTINGS_START = 'LOADING_SETTINGS_START';
+export const LOADING_SETTINGS_COMPLETE = 'LOADING_SETTINGS_COMPLETE';

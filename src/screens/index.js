@@ -21,6 +21,7 @@ import UserAccountScreen from './UserAccountScreen';
 import ChangePasswordScreen from './ChangePasswordScreen';
 import ChangeUserNameScreen from './ChangeUserNameScreen';
 import CalculateInsulinScreen from './CalculateInsulinScreen';
+import ChangeUserSettingsScreen from './ChangeUserSettingScreen';
 
 // register all screens of the app (including internal ones)
 // eslint-disable-next-line import/prefer-default-export
@@ -120,6 +121,12 @@ export function registerScreens(store, provider) {
   Navigation.registerComponent(
     'diabetesNinja.ChangeUserNameScreen',
     () => ChangeUserNameScreen,
+    store,
+    provider,
+  );
+  Navigation.registerComponent(
+    'diabetesNinja.ChangeUserSettingsScreen',
+    () => ChangeUserSettingsScreen,
     store,
     provider,
   );
