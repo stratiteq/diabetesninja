@@ -34,8 +34,7 @@ class Api {
   }
 
   static xhr(route, params, verb) {
-    //const host = 'https://sandbox.diabetesninja.net/api/v1/';
-    const host = 'https://diabetesninjabeapi-dev.azurewebsites.net/api/v1/';
+    const host = 'https://sandbox.diabetesninja.net/api/v1/';
 
     const url = `${host}${route}`;
     const options = Object.assign({ method: verb }, Api.getParams(params));
