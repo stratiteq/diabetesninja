@@ -115,6 +115,8 @@ class DashboardOverview extends React.Component {
           onTimeSpanSwitch={this.setTimeSpan}
         />
         <ChartBox
+          minBSValue={this.props.settings.lowerBSLimit}
+          maxBSValue={this.props.settings.upperBSLimit}
           userlogEntries={this.props.userLogEntries}
           externalUserDataEntries={
             this.props.externalUserData.externalDataEntries
@@ -134,6 +136,7 @@ DashboardOverview.defaultProps = {
   currentlyRetrievingValue: false,
   currentlyLoggingValue: false,
   lastBloodsugarValue: null,
+  settings: null,
 };
 
 DashboardOverview.propTypes = {
@@ -144,6 +147,7 @@ DashboardOverview.propTypes = {
   currentlyRetrievingValue: PropTypes.bool,
   currentlyLoggingValue: PropTypes.bool,
   lastBloodsugarValue: PropTypes.object,
+  settings: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -154,6 +158,7 @@ function mapStateToProps(state) {
     userLogEntries: state.userlog.userLogEntries,
     lastBloodsugarValue: state.bloodsugar.lastValue,
     externalUserData: state.externalUserData,
+    settings: state.settings,
   };
 }
 

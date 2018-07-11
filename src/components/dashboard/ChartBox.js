@@ -137,6 +137,14 @@ class ChartBox extends React.Component {
     const chartData = ChartBox.getChartData(this.getBloodSugarEvents());
     const chartDataStrict = ChartBox.getStrictChartData(timeStart, chartData);
 
+    const minBSChartData = [
+      { x: timeStart, y: this.props.minBSValue },
+      { x: timeNow, y: this.props.minBSValue },
+    ];
+    const maxBSChartData = [
+      { x: timeStart, y: this.props.maxBSValue },
+      { x: timeNow, y: this.props.maxBSValue },
+    ];
     const externalUserChartData = ChartBox.getChartData(this.getExternalUserData());
 
     return (
@@ -192,6 +200,44 @@ class ChartBox extends React.Component {
                 data={chartData}
               />
             )}
+          <VictoryLine
+            domain={{
+              x: [timeStart, timeNow],
+              y: [0, 21],
+            }}
+            animate={{
+              duration: 250,
+              onLoad: { duration: 0 },
+            }}
+            style={{
+              data: {
+                stroke: '#C0C0C0',
+                strokeWidth: 0.5,
+                strokeLinecap: 'round',
+                strokeDasharray: '5,5',
+              },
+            }}
+            data={minBSChartData}
+          />
+          <VictoryLine
+            domain={{
+              x: [timeStart, timeNow],
+              y: [0, 21],
+            }}
+            animate={{
+              duration: 250,
+              onLoad: { duration: 0 },
+            }}
+            style={{
+              data: {
+                stroke: '#C0C0C0',
+                strokeWidth: 0.5,
+                strokeDasharray: '5,5',
+                strokeLinecap: 'round',
+              },
+            }}
+            data={maxBSChartData}
+          />
           {chartData.length > 0 && (
             <VictoryScatter
               domain={{
@@ -252,6 +298,8 @@ ChartBox.propTypes = {
   userlogEntries: PropTypes.array.isRequired,
   timeRange: PropTypes.number.isRequired,
   externalUserDataEntries: PropTypes.array,
+  minBSValue: PropTypes.number.isRequired,
+  maxBSValue: PropTypes.number.isRequired,
 };
 
 export default ChartBox;
