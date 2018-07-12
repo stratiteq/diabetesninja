@@ -3,8 +3,8 @@ import * as types from './actionTypes';
 
 const initialState = Immutable({
   language: 'en',
-  lowerBSLimit: 3.9,
-  upperBSLimit: 11.0,
+  lowerBSLimit: 4.1,
+  upperBSLimit: 10.0,
   insulinUnitsPerDay: 0,
   loading: false,
 });

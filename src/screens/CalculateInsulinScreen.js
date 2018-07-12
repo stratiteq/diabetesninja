@@ -22,7 +22,7 @@ class CalculateInsulinScreen extends React.Component {
     });
 
     this.state = {
-      totalUnits: this.props.settings.insulinUnitsPerDay,
+      totalUnits: this.props.settings.insulinUnitsPerDay.toString(),
     };
 
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));

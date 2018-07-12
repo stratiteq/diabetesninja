@@ -200,7 +200,7 @@ class ChangeUserSettingScreen extends React.Component {
                     keyboardType="numeric"
                     selectTextOnFocus
                     editable={!isFollower}
-                    maxLength={3}
+                    maxLength={4}
                     onChangeText={text => this.onChangedText(text, 'MaxBSValue')}
                     value={this.state.MaxBSValue}
                   />
