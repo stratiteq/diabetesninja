@@ -5,7 +5,7 @@ A react native app for logging glucose, events and carbs. Food database.
 
 Version 1.1
 
-<img src="https://github.com/hanssonfredrik/diabetesninja/blob/master/logo-text.jpg" alt="DiabetesNinja-Logo" width="200px">
+<img src="http://diabetesninja.se/Content/Images/DiabetesNinja_Logo.jpg" alt="DiabetesNinja-Logo" width="200px">
 
 
 ## Getting Started
