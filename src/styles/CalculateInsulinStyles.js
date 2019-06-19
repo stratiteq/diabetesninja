@@ -22,7 +22,6 @@ const CalculateInsulinStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     justifyContent: 'center',
-    fontSize: 20,
   },
   section: {
     backgroundColor: '#ECECEC',

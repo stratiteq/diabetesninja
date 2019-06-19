@@ -19,6 +19,8 @@ import * as userLogActions from '../../redux/userlog/actions';
 
 import * as bloodSugarActions from '../../redux/bloodsugar/actions';
 import * as networkActions from '../../redux/network/actions';
+import * as settingsActions from '../../redux/settings/actions';
+
 import SideBarItem from './SideBarItem';
 import { rootNavigator } from '../../screens/DashboardScreen';
 import NavigationStyle from '../../styles/NavigationStyles';
@@ -248,6 +250,7 @@ class SideBar extends React.Component {
     const fromDate = moment(new Date()).add(-7, 'day');
     this.props.userLogActions.resetUserLogFromApi(fromDate);
     this.props.externalUserDataActions.resetExternalDataFromApi();
+    this.props.settingsActions.loadEffectiveUserSettings();
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -340,6 +343,7 @@ SideBar.defaultProps = {
   externalUserDataActions: null,
   loginActions: null,
   networkActions: null,
+  settingsActions: null,
 };
 
 SideBar.propTypes = {
@@ -350,6 +354,7 @@ SideBar.propTypes = {
   externalUserDataActions: PropTypes.object,
   loginActions: PropTypes.object,
   networkActions: PropTypes.object,
+  settingsActions: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -373,6 +378,7 @@ function mapDispatchToProps(dispatch) {
       externalUserDataActions,
       dispatch,
     ),
+    settingsActions: bindActionCreators(settingsActions, dispatch),
   };
 }
 
